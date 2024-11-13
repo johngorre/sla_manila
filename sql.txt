@@ -1,0 +1,39 @@
+#Command 1: create database
+CREATE DATABASE sla_manila;
+
+#Command 2: create downtime_incidents table 
+CREATE TABLE `downtime_incidents` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `isp` varchar(100) NOT NULL,
+  `downtime_minutes` double NOT NULL,
+  `start_date` varchar(100) NOT NULL,
+  `end_date` varchar(100) NOT NULL,
+  `location` enum('MANILA','CEBU') NOT NULL,
+  `start_month` int NOT NULL,
+  `end_month` int NOT NULL,
+  `end_time` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+)
+
+#Command 3: create monthly_downtime_statistics table
+CREATE TABLE `monthly_downtime_statistics` (
+  `Month` varchar(20) DEFAULT NULL,
+  `Year` int DEFAULT NULL,
+  `TotalMinutesOfMonth` double DEFAULT NULL,
+  `RiseDowntime` double DEFAULT NULL,
+  `PldtDowntime` double DEFAULT NULL,
+  `GlobeDowntime` double DEFAULT NULL,
+  `RiseUptime` double DEFAULT NULL,
+  `PldtUptime` double DEFAULT NULL,
+  `GlobeUptime` double DEFAULT NULL
+)
+
+
+ Command 4: create uptime history table;
+ CREATE TABLE `uptime_history` (
+  `month` varchar(20) NOT NULL,
+  `year` int NOT NULL,
+  `rise_uptime` float NOT NULL,
+  `pldt_uptime` float NOT NULL,
+  `globe_uptime` float NOT NULL
+)
