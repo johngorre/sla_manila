@@ -37,56 +37,68 @@ def push_sla_record():
 
             #step 1: identify the start and end month, in this case the start month is entry[6]
             #step 2: get the date and month of the end date and subtract it by 1. in this case its entry[4][8:10]
-            minutes_from_midnight = minutes_since_midnight(entry[8])
+            minutes_from_midnight = float(minutes_since_midnight(entry[8]))
             excess_day = int(entry[4][8:10]) - 1
+            minutes_to_add_first = minutes_until_end_of_day(entry[3][11:19])
             excess_day_in_minutes = float(excess_day) * 24 * 60
+
+            #print(entry[2])
 
             #check if the end day is greater the 1
             if excess_day < 1:
+                
                 if entry[1] == 'globe':
-                    globe_downtime = entry[2] - float(minutes_from_midnight)
-                    globe_to_next_month = float(minutes_from_midnight)
+                    globe_downtime_first = minutes_to_add_first
+                    globe_downtime_second = minutes_from_midnight
                 else:
-                    globe_downtime = 0
-                    globe_to_next_month = 0
+                    globe_downtime_first = 0
+                    globe_downtime_second = 0
                 if entry[1] == 'rise':
-                    rise_downtime = entry[2] - float(minutes_from_midnight)
-                    rise_to_next_month = float(minutes_from_midnight)
+                    rise_downtime_first = minutes_to_add_first
+                    rise_downtime_second = minutes_from_midnight
                 else:
-                    rise_downtime = 0
-                    rise_to_next_month = 0
+                    rise_downtime_first = 0
+                    rise_downtime_second = 0
                 if entry[1] == 'pldt':
-                    pldt_downtime = entry[2] - float(minutes_from_midnight)
-                    pldt_to_next_month = float(minutes_from_midnight)
+                    pldt_downtime_first = minutes_to_add_first
+                    pldt_downtime_second = minutes_from_midnight
                 else:
-                    pldt_downtime = 0
-                    pldt_to_next_month = 0
+                    pldt_downtime_first = 0
+                    pldt_downtime_second = 0
 
-                update_monthly_records(float(globe_downtime), float(rise_downtime), float(pldt_downtime), int_to_month(entry[6]), int(year))
-                update_monthly_records(float(7), float(rise_to_next_month), float(pldt_to_next_month), entry[7], int(entry[4][0:4]))
+                update_monthly_records(float(globe_downtime_first), float(rise_downtime_first), float(pldt_downtime_first), int_to_month(entry[6]), entry[9])
+                update_monthly_records(float(globe_downtime_second), float(rise_downtime_second), float(pldt_downtime_second), int_to_month(entry[7]), entry[9])
 
             else:
-
+                
                 if entry[1] == 'globe':
-                    globe_downtime = entry[2] - float(minutes_from_midnight + excess_day_in_minutes)
-                    globe_to_next_month = float(excess_day_in_minutes)
+                    globe_downtime_first = minutes_to_add_first
+                    globe_downtime_second = minutes_from_midnight + excess_day_in_minutes
                 else:
-                    globe_downtime = 0
-                    globe_to_next_month = 0
+                    globe_downtime_first = 0
+                    globe_downtime_second = 0
                 if entry[1] == 'rise':
-                    rise_downtime = entry[2] - float(minutes_from_midnight + excess_day_in_minutes)
-                    rise_to_next_month = float(excess_day_in_minutes)
+                    rise_downtime_first = minutes_to_add_first
+                    rise_downtime_second = minutes_from_midnight + excess_day_in_minutes
                 else:
-                    rise_downtime = 0
-                    rise_to_next_month = 0
+                    rise_downtime_first = 0
+                    rise_downtime_second = 0
                 if entry[1] == 'pldt':
-                    pldt_downtime = entry[2] - float(minutes_from_midnight + excess_day_in_minutes)
-                    pldt_to_next_month = float(excess_day_in_minutes)
+                    pldt_downtime_first = minutes_to_add_first
+                    pldt_downtime_second = minutes_from_midnight + excess_day_in_minutes
                 else:
-                    pldt_downtime = 0
-                    pldt_to_next_month = 0
+                    pldt_downtime_first = 0
+                    pldt_downtime_second = 0
 
-                update_monthly_records(float(globe_downtime), float(rise_downtime), float(pldt_downtime), int_to_month(entry[6]), int(year))
-                update_monthly_records(float(globe_to_next_month), float(rise_to_next_month), float(pldt_to_next_month), entry[7], int(entry[4][0:4]))
+                print(globe_downtime_first)
+                print(globe_downtime_second)
+                print(rise_downtime_first)
+                print(rise_downtime_second)
+                print(pldt_downtime_first)
+                print(pldt_downtime_second)
+
+                update_monthly_records(float(globe_downtime_first), float(rise_downtime_first), float(pldt_downtime_first), int_to_month(entry[6]), entry[9])
+                update_monthly_records(float(globe_downtime_second), float(rise_downtime_second), float(pldt_downtime_second), int_to_month(entry[7]), entry[9])
+
 
 push_sla_record()

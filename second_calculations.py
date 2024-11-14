@@ -28,6 +28,7 @@ def insert_downtime_incident(start, end):
     start_date = start['timestamp']
     end_date = end['timestamp']
     location = "MANILA"
+    year = datetime.datetime.now().year
 
     if downtime_duration_min > 0:
 
@@ -41,9 +42,9 @@ def insert_downtime_incident(start, end):
                 # Define the SELECT query to check for existing record
                 check_query = """SELECT COUNT(*) FROM downtime_incidents 
                                 WHERE isp = %s AND downtime_minutes = %s AND start_date = %s AND end_date = %s 
-                                AND location = %s AND start_month = %s AND end_month = %s AND end_time = %s"""
+                                AND location = %s AND start_month = %s AND end_month = %s AND end_time = %s AND Year = %s"""
                                 
-                data = (isp, downtime_duration_min, start_date, end_date, location, start_month, end_month, end_time)
+                data = (isp, downtime_duration_min, start_date, end_date, location, start_month, end_month, end_time, year)
                 
                 # Execute the SELECT query to check if the record already exists
                 cursor.execute(check_query, data)
@@ -51,8 +52,8 @@ def insert_downtime_incident(start, end):
                 
                 # If the count is zero, insert the new record
                 if result[0] == 0:
-                    insert_logs = """INSERT INTO downtime_incidents (isp, downtime_minutes, start_date, end_date, location, start_month, end_month, end_time) 
-                                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"""
+                    insert_logs = """INSERT INTO downtime_incidents (isp, downtime_minutes, start_date, end_date, location, start_month, end_month, end_time, Year) 
+                                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
                     cursor.execute(insert_logs, data)
                     connection.commit()
 
@@ -325,7 +326,7 @@ def pull_all_monthly_stat():
 
 
 #-----------------------------------------------------------------------------------------
-# calculate the number of minutes from the given time to 12 MN
+# calculate the number of minutes from the given time back to 12 MN
 def minutes_since_midnight(time_str):
     # Split the input time into hours, minutes, and seconds
     hours, minutes, seconds = map(int, time_str.split(':'))
@@ -333,6 +334,32 @@ def minutes_since_midnight(time_str):
     # Calculate total minutes since midnight, including seconds as a fraction of a minute
     total_minutes = hours * 60 + minutes + seconds / 60
     return total_minutes
+
+#-----------------------------------------------------------------------------------------
+# calculate the number of minutes from the given time to 12mn
+
+def minutes_until_end_of_day(time_str):
+    # Split the time string into hours, minutes, and seconds
+    hours, minutes, seconds = map(int, time_str.split(':'))
+
+    # Validate the input time for 24-hour format
+    if not (0 <= hours < 24 and 0 <= minutes < 60 and 0 <= seconds < 60):
+        raise ValueError("Invalid time format. Hours must be 0-23, minutes and seconds must be 0-59.")
+    
+    # Total seconds in a day (24 hours)
+    total_seconds_in_day = 24 * 60 * 60  # 86400 seconds in a day
+    
+    # Total seconds from '00:00:00' to the input time
+    input_seconds = hours * 3600 + minutes * 60 + seconds
+
+    # Calculate the remaining seconds to '23:59:59'
+    remaining_seconds = total_seconds_in_day - input_seconds
+
+    # Convert remaining seconds to minutes
+    remaining_minutes = remaining_seconds / 60
+
+    return remaining_minutes
+
 
 #-----------------------------------------------------------------------------------------
 # calculate the number of minutes from the given time to 12 MN
