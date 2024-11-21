@@ -1,18 +1,17 @@
 import mysql.connector as connection
-from second_calculations import *
-from data import *
 import pandas as pd
+
+from data import *
+from second_calculations import *
 
 
 #-----------------------------------------------------------------------------------------
 # pull everything from update history
 def pull_uptime_history():
     uptime_history = []
-
-    try:
-        # Connect to the database
+    try:       # Connect to the database
         connection = mysql.connector.connect(**config)
-        
+      
         if connection.is_connected():
             cursor = connection.cursor()
 
@@ -48,7 +47,7 @@ def find_missing_numbers(arr, cap=12):
     # Find the largest number in the array and subtract 1
     largest_number = max(arr) - 1
     
-    # Cap the range at 'cap' (12)
+  # Cap the range at 'cap' (12)
     largest_number = min(largest_number, cap)
     
     # Create a full set of numbers from 1 to 'largest_number'
