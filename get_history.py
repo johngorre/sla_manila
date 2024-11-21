@@ -129,3 +129,4 @@ sorted_uptimes = pull_sorted_uptime()
 
 df = pd.DataFrame(sorted_uptimes, columns=['Month', 'Year', 'Rise Uptime', 'Pldt Uptime', 'Globe Uptime'])
 df.to_csv('sample.csv', index=False)
+
